@@ -22,13 +22,23 @@ def main():
         print(f"❌ Dossier {args.target_dir} introuvable.")
         sys.exit(1)
     
+    # Validation du dossier
+    if not os.path.isdir(args.target_dir):
+        print(f" Erreur : '{args.target_dir}' n'est pas un dossier valide.")
+        sys.exit(1)
+    
+    # Lecture initiale des fichiers 
+    files = tools.read_file(args.target_dir)
+    if not files:
+        print(" Aucun fichier Python trouvé dans le dossier cible. Fin du programme.")
+        sys.exit(0)
     # INITIALISATION 
     
     initial_state: AgentState = {
         "target_dir": args.target_dir,
         "max_iterations": args.max_iterations,
         "iteration": 0,                # On commence à zéro
-        "files_content": tools.read_file(args.target_dir),          
+        "files_content": files,          
         "analysis_report": "",
         "refactoring_plan": [],
         "test_result": False,
@@ -43,6 +53,7 @@ def main():
 
     workflow = create_graph()
     final_state = workflow.invoke(initial_state)
+    print(f"Statut final : {' Corrigé' if final_state['test_result'] else 'Non corrigé'}")
     print("✅ MISSION_COMPLETE")
 
 if __name__ == "__main__":
