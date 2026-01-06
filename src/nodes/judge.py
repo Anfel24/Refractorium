@@ -6,7 +6,7 @@ def judge_node(state: AgentState):
     # Écrire le code du State sur le disque
    
     try:
-        #khouloud:i need this function to save the files to disk before running tests
+       
         save_files_to_disk(state["target_dir"], state["files_content"])
         
         # EXÉCUTION DES TESTS
@@ -24,7 +24,7 @@ def judge_node(state: AgentState):
 
     except Exception as e:
         error_msg = f"Erreur technique lors du jugement : {str(e)}"
-        print(f"{error_msg}")
+        print(f"{error_msg}")  
         return {
             "test_result": False,
             "test_errors": error_msg,
