@@ -8,17 +8,17 @@ def runpylint(target_dir: str) -> str:
         text=True
     )
 
-    output = []
+      output = []
 
-    if result.stdout:
+      if result.stdout:
         output.append("=== pylint output ===")
         output.append(result.stdout)
 
-    if result.stderr:
+     if result.stderr:
         output.append("=== pylint errors ===")
         output.append(result.stderr)
 
-    output.append(f" return code: {result.returncode} ===") #code indique est ce que le code  la gravite de code 
+      output.append(f" return code: {result.returncode} ===") #code indique est ce que le code  la gravite de code 
 
     return "\n".join(output)
 
