@@ -5,7 +5,7 @@ from typing import Dict
 
 
 llm = get_model()
-#un exemple pour Sihem (ingenieure prompt) sur la definition de model de sortie structuré avec pydantic
+#un exemple pour Sihem (ingenieure prompt) sur la definition de model de sortie structuré avec pydantic(prompt fausse )
 class FixedCode(BaseModel):
     files_content: Dict[str, str] = Field(
         description="Le dictionnaire complet des fichiers modifiés {nom_fichier: contenu}"
@@ -29,6 +29,9 @@ def fixer_node(state: AgentState):
     # Construction de la requête
     # Note comment on injecte le plan de l'auditeur ici !
     plan_str = "\n".join(state["refactoring_plan"])
+
+    # On récupère les erreurs du Judge pour aider le Fixer
+    last_errors = state.get("test_errors", "Aucune erreur précédente.")
     
     try:
         result = fixer_llm.invoke([
@@ -36,7 +39,7 @@ def fixer_node(state: AgentState):
             {"role": "user", "content": f"""
                 PLAN À SUIVRE : 
                 {plan_str}
-                
+                ERREURS PRÉCÉDENTES : {last_errors}
                 CODE ACTUEL : 
                 {state['files_content']}
             """}
@@ -46,10 +49,14 @@ def fixer_node(state: AgentState):
         if not result or not result.files_content:
             raise ValueError("L'IA a renvoyé un contenu vide ou invalide.")
 
+        # On crée une copie du code actuel et on met à jour SEULEMENT les fichiers modifiés
+        #C'est ta protection d'Orchestrateur. Elle garantit que même si l'IA oublie de renvoyer un fichier non modifié, celui-ci ne disparaît pas du projet.
+        updated_files = state["files_content"].copy()
+        updated_files.update(result.files_content)
         # Mise à jour de l'état
         return {
             "iteration": new_iteration,
-            "files_content": result.files_content, # Le code est maintenant mis à jour !
+            "files_content": updated_files, # Le code est maintenant mis à jour !
             "history": state["history"] + [f"Correction {new_iteration}: {result.explanation}"]
         }
 

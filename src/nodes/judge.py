@@ -13,18 +13,13 @@ def judge_node(state: AgentState):
         
         test_success, logs = runpytest(state["target_dir"])
         
-        if test_success:
-            print("  Tous les tests passent !")
-            summary = "Le code est valide et fonctionnel."
-        else:
-            print(f"Échec des tests : {logs[:100]}...")
-            summary = f"Erreurs détectées : {logs}"
+        
 
         #  MISE À JOUR DE L'ÉTAT
         return {
             "test_result": True if test_success else False,
             "test_errors": logs if not test_success else "",
-            "history": state["history"] + [f"Jugement : {summary}"]
+            "history": state["history"] + [f"status:{'Succès' if test_success else 'Échec'} "]
         }
 
     except Exception as e:
@@ -33,5 +28,5 @@ def judge_node(state: AgentState):
         return {
             "test_result": False,
             "test_errors": error_msg,
-            "history": state["history"] + [error_msg]
+            "history": state["history"] +[f"status:{'Succès' if test_success else 'Échec'} "]+ [error_msg]
         }

@@ -6,7 +6,8 @@ from src.nodes.judge import judge_node
 
 def should_continue(state: AgentState):
     # La logique de routage de l'Orchestrateur
-    if state["test_result"] == True:
+    #Utiliser state.get("test_result") évite un crash si jamais la clé n'était pas présente 
+    if state.get("test_result") is True:
         print(" Code validé !")
         return END
     

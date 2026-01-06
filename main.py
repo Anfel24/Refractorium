@@ -50,11 +50,20 @@ def main():
     print(f"🚀 DEMARRAGE SUR : {args.target_dir}")
     log_experiment("System", "STARTUP", f"Target: {args.target_dir}", "INFO")
  
+    try:
+     workflow = create_graph()
+     final_state = workflow.invoke(initial_state)
+     print(f"Statut final : {' Corrigé' if final_state['test_result'] else 'Non corrigé'}")
+     print(f"Itérations utilisées : {final_state['iteration']}/{args.max_iterations}")
+  
 
-    workflow = create_graph()
-    final_state = workflow.invoke(initial_state)
-    print(f"Statut final : {' Corrigé' if final_state['test_result'] else 'Non corrigé'}")
+    except Exception as e:
+     print(f"💥 ERREUR CRITIQUE du Graphe : {e}")
+     log_experiment("System", "CRASH", str(e), "ERROR")
+
     print("✅ MISSION_COMPLETE")
+
+
 
 if __name__ == "__main__":
     main()
