@@ -1,14 +1,24 @@
-import subprocess
 
-def runpylint(target_dir):
- result = subprocess.run(
-     ["pylint", target_dir],
+    import subprocess
+
+def runpylint(target_dir: str) -> str:
+    result = subprocess.run(
+        ["pylint", target_dir],
         capture_output=True,
-      text=True
+        text=True
     )
-    
- return {
-         "stdout": result.stdout,
-         "stderr": result.stderr,
-         "returncode": result.returncode #code indique est ce que le code  la gravite de code 
-    }
+
+    output = []
+
+    if result.stdout:
+        output.append("=== pylint output ===")
+        output.append(result.stdout)
+
+    if result.stderr:
+        output.append("=== pylint errors ===")
+        output.append(result.stderr)
+
+    output.append(f" return code: {result.returncode} ===") #code indique est ce que le code  la gravite de code 
+
+    return "\n".join(output)
+
