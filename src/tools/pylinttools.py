@@ -1,27 +1,24 @@
 
-
 import subprocess
 
-def runpytest(target_dir: str):
+def runpylint(target_dir: str) -> str:
     result = subprocess.run(
-        ["pytest", target_dir],
+        ["pylint", target_dir],
         capture_output=True,
         text=True
     )
 
-    success = (result.returncode == 0)
+    output = []
 
-    logs = []
-    logs.append("===== rapport de pytest =====")
+    if result.stdout:
+        output.append("=== dortie de pylint ===")
+        output.append(result.stdout)
 
-    if result.stdout.strip():
-        logs.append("---- sortie standard ----")
-        logs.append(result.stdout)
+    if result.stderr:
+        output.append("=== pylint erreurs ===")
+        output.append(result.stderr)
 
-    if result.stderr.strip():
-        logs.append("---- erreurs ----")
-        logs.append(result.stderr)
+    output.append(f"=== le code: {result.returncode} ===") #code indique est ce que le code  la gravite de code 
 
-    logs.append(f"---- le code: {result.returncode} ----") #code indique est ce que le code  la gravite de code 
+    return "\n".join(output)
 
-    return success, "\n".join(logs)
