@@ -1,68 +1,103 @@
+import os
 from pydantic import BaseModel, Field
 from src.state import AgentState
 from src.llm_config import get_model
 from typing import Dict
-
+# Importation du logger obligatoire pour le TP
+from src.utils.logger import log_experiment, ActionType 
 
 llm = get_model()
-#un exemple pour Sihem (ingenieure prompt) sur la definition de model de sortie structuré avec pydantic(prompt fausse )
+
 class FixedCode(BaseModel):
     files_content: Dict[str, str] = Field(
-        description="Le dictionnaire complet des fichiers modifiés {nom_fichier: contenu}"
+        description="Dictionnaire complet des fichiers modifiés {nom_fichier: contenu_complet}"
     )
-    explanation: str = Field(description="Résumé des corrections effectuées")
+    explanation: str = Field(description="Résumé technique des corrections effectuées")
 
-FIXER_SYSTEM_PROMPT = """Tu es un développeur Python expert en refactoring.
-Ta mission est d'appliquer STRICTEMENT le plan de refactoring fourni.
-Tu dois renvoyer le contenu COMPLET de chaque fichier modifié. 
-Ne change pas la logique métier, améliore uniquement la structure et la qualité selon le plan."""
-
-
+def load_fixer_prompt():
+    """Charge les instructions système depuis le fichier texte externe"""
+    path = os.path.join("src", "prompts", "fixer_prompt.txt")
+    if not os.path.exists(path):
+        return "Tu es un expert Python. Applique le plan de refactoring fourni."
+    with open(path, "r", encoding="utf-8") as f:
+        return f.read()
 
 def fixer_node(state: AgentState):
-    # Incrémentation de l'itération 
-    new_iteration = state["iteration"] + 1
+    # Incrémentation de l'itération
+    new_iteration = state.get("iteration", 0) + 1
     
-    # On prépare le LLM structuré
+    # Préparation du prompt système
+    FIXER_SYSTEM_PROMPT = load_fixer_prompt()
+    
+    # Configuration du LLM structuré
     fixer_llm = llm.with_structured_output(FixedCode)
 
-    # Construction de la requête
-    # Note comment on injecte le plan de l'auditeur ici !
-    plan_str = "\n".join(state["refactoring_plan"])
-
-    # On récupère les erreurs du Judge pour aider le Fixer
+    # Préparation des données pour le prompt utilisateur
+    plan_str = "\n".join(state.get("refactoring_plan", ["Aucun plan fourni"]))
     last_errors = state.get("test_errors", "Aucune erreur précédente.")
+    current_code = str(state.get("files_content", {}))
     
+    user_content = f"""
+    PLAN À SUIVRE : 
+    {plan_str}
+    
+    ERREURS DE TESTS À CORRIGER : 
+    {last_errors}
+    
+    CODE SOURCE ACTUEL : 
+    {current_code}
+    """
+
     try:
+        print(f"🛠️ [Fixer] Itération {new_iteration} : Application des corrections...")
+        
+        # Appel au LLM
         result = fixer_llm.invoke([
             {"role": "system", "content": FIXER_SYSTEM_PROMPT},
-            {"role": "user", "content": f"""
-                PLAN À SUIVRE : 
-                {plan_str}
-                ERREURS PRÉCÉDENTES : {last_errors}
-                CODE ACTUEL : 
-                {state['files_content']}
-            """}
+            {"role": "user", "content": user_content}
         ])
 
-       # On vérifie si result est None ou si files_content est vide
         if not result or not result.files_content:
             raise ValueError("L'IA a renvoyé un contenu vide ou invalide.")
 
-        # On crée une copie du code actuel et on met à jour SEULEMENT les fichiers modifiés
-        #C'est ta protection d'Orchestrateur. Elle garantit que même si l'IA oublie de renvoyer un fichier non modifié, celui-ci ne disparaît pas du projet.
+        # --- LOGGING OBLIGATOIRE (Critère de notation Data-Driven) ---
+        log_experiment(
+            agent_name="FixerAgent",
+            model_used="gemini-2.0-flash", # ou votre modèle config
+            action=ActionType.FIX,
+            details={
+                "input_prompt": user_content,
+                "output_response": result.model_dump_json(),
+                "iteration": new_iteration
+            },
+            status="SUCCESS"
+        )
+        # -----------------------------------------------------------
+
+        # Mise à jour sécurisée des fichiers
         updated_files = state["files_content"].copy()
         updated_files.update(result.files_content)
-        # Mise à jour de l'état
+
         return {
             "iteration": new_iteration,
-            "files_content": updated_files, # Le code est maintenant mis à jour !
+            "files_content": updated_files,
             "history": state["history"] + [f"Correction {new_iteration}: {result.explanation}"]
         }
 
     except Exception as e:
-        print(f" Erreur lors de la correction : {e}")
+        error_msg = f"Échec de la correction : {str(e)}"
+        print(f"❌ {error_msg}")
+        
+        # Log de l'échec
+        log_experiment(
+            agent_name="FixerAgent",
+            model_used="gemini-2.0-flash",
+            action=ActionType.FIX,
+            details={"error": str(e), "iteration": new_iteration},
+            status="FAILED"
+        )
+        
         return {
             "iteration": new_iteration,
-            "history": state["history"] + [f"Échec de la correction n°{new_iteration}"]
+            "history": state["history"] + [error_msg]
         }
