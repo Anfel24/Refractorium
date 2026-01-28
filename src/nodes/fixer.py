@@ -1,4 +1,5 @@
 import os
+import time
 from pydantic import BaseModel, Field
 from src.state import AgentState
 from src.llm_config import get_model
@@ -23,6 +24,7 @@ def load_fixer_prompt():
         return f.read()
 
 def fixer_node(state: AgentState):
+    #time.sleep(5)
     # Incrémentation de l'itération
     new_iteration = state.get("iteration", 0) + 1
     

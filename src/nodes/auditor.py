@@ -1,4 +1,5 @@
-import os  # FIX 1: Import manquant
+import os
+import time  # FIX 1: Import manquant
 from src.state import AgentState
 from src.tools.pylinTools import runpylint
 from src.llm_config import get_model
@@ -24,7 +25,7 @@ def load_auditor_prompt():
 AUDITOR_SYSTEM_PROMPT = load_auditor_prompt()
 
 def auditor_node(state: AgentState):
-    
+   # time.sleep(5)
     # Récupération du dict Pylint
     pylint_res = runpylint(state["target_dir"])
     

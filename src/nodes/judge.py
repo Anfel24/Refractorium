@@ -1,4 +1,5 @@
 import os
+import time
 from pydantic import BaseModel, Field
 from src.state import AgentState
 from src.llm_config import get_model
@@ -21,6 +22,7 @@ def load_judge_prompt():
         return f.read()
 
 def judge_node(state: AgentState):
+    #time.sleep(5)
     # 1. Sauvegarde physique du code sur le disque pour que les outils puissent scanner
     print("💾 [Judge] Sauvegarde des fichiers dans la sandbox...")
     for path, content in state["files_content"].items():
