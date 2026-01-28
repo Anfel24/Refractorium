@@ -2,9 +2,9 @@ import os
 from pydantic import BaseModel, Field
 from src.state import AgentState
 from src.llm_config import get_model
-from src.tools.fileTools import write_file # Utilisation de tes outils
+from src.tools.filetools import write_file # Utilisation de tes outils
 from src.tools.pylinTools import runpylint
-from src.tools.pytestTools import runpytest
+from src.tools.pytesttools import runpytest
 from src.utils.logger import log_experiment, ActionType 
 
 llm = get_model()
@@ -57,7 +57,7 @@ def judge_node(state: AgentState):
         # --- LOGGING OBLIGATOIRE ---
         log_experiment(
             agent_name="JudgeAgent",
-            model_used="gemini-2.0-flash",
+            model_used="gemini-1.5-flash", # ou votre modèle config
             action=ActionType.GENERATION,
             details={
                 "pytest_status": "PASS" if pytest_success else "FAIL",

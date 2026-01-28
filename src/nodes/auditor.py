@@ -1,7 +1,7 @@
 import os  # FIX 1: Import manquant
 from src.state import AgentState
 from src.tools.pylinTools import runpylint
-from llm_config import get_model
+from src.llm_config import get_model
 from pydantic import BaseModel, Field
 # FIX 3: Import du logger obligatoire
 from src.utils.logger import log_experiment, ActionType 
@@ -24,6 +24,7 @@ def load_auditor_prompt():
 AUDITOR_SYSTEM_PROMPT = load_auditor_prompt()
 
 def auditor_node(state: AgentState):
+    
     # Récupération du dict Pylint
     pylint_res = runpylint(state["target_dir"])
     
@@ -63,20 +64,27 @@ def auditor_node(state: AgentState):
             "history": state["history"] + [f"Audit terminé (Priorité: {result.priority})"]
         }
 
+   
+    # Dans auditor.py ET fixer.py
     except Exception as e:
-        error_msg = f"Audit échoué : {str(e)}"
-        print(f"❌ {error_msg}")
+     error_msg = str(e)
+     print(f"❌ Erreur détectée : {error_msg}")
+    
+     # ON SATISFAIT LE LOGGER QUOI QU'IL ARRIVE
+     log_experiment(
+        agent_name="AuditorAgent", # Ou FixerAgent selon le fichier
+        model_used="gemini-1.5-flash",
+        action=ActionType.ANALYSIS,
+        details={
+            "input_prompt": "Tentative d'appel LLM", 
+            "output_response": f"ERREUR_CRITIQUE: {error_msg}"
+        },
+        status="FAILURE"
+     )
+    
+    
         
-        # Log de l'échec
-        log_experiment(
-            agent_name="AuditorAgent",
-            model_used="gemini-1.5-flash",
-            action=ActionType.ANALYSIS,
-            details={"error": str(e)},
-            status="FAILED"
-        )
-        
-        return {
+    return {
             "analysis_report": pylint_report,
             "refactoring_plan": ["Corriger les erreurs Pylint manuellement"],
             "history": state["history"] + [error_msg]

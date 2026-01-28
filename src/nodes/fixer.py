@@ -91,7 +91,7 @@ def fixer_node(state: AgentState):
         # Log de l'échec
         log_experiment(
             agent_name="FixerAgent",
-            model_used="gemini-2.0-flash",
+            model_used="gemini-1.5-flash",
             action=ActionType.FIX,
             details={"error": str(e), "iteration": new_iteration},
             status="FAILED"

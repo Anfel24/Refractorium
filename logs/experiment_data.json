@@ -1,11 +1,299 @@
 [
-  {
-    "id": "9e82e9b0-9b43-4a78-af43-d5d5ef848a2f",
-    "timestamp": "2025-12-26T01:26:41.177789",
-    "agent": "System",
-    "model": "unknown",
-    "action": "STARTUP",
-    "details": "Target: ./sandbox",
-    "status": "INFO"
-  }
+    {
+        "id": "9e82e9b0-9b43-4a78-af43-d5d5ef848a2f",
+        "timestamp": "2025-12-26T01:26:41.177789",
+        "agent": "System",
+        "model": "unknown",
+        "action": "STARTUP",
+        "details": "Target: ./sandbox",
+        "status": "INFO"
+    },
+    {
+        "id": "150a5444-0a25-4848-bdd9-c63c07747d9c",
+        "timestamp": "2026-01-28T00:17:25.971194",
+        "agent": "System",
+        "model": "None",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "input_prompt": "Initialisation du système",
+            "output_response": "Dossier cible détecté : sandbox"
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "02120ec9-6f7e-4366-9787-c2d6fad16296",
+        "timestamp": "2026-01-28T00:23:22.772776",
+        "agent": "System",
+        "model": "None",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "input_prompt": "Initialisation du système",
+            "output_response": "Dossier cible détecté : sandbox"
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "445a09f0-36f1-4a6e-a85e-5fd07bbe9a87",
+        "timestamp": "2026-01-28T00:23:24.071626",
+        "agent": "AuditorAgent",
+        "model": "gemini-1.5-flash",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "input_prompt": "Tentative d'audit",
+            "output_response": "CRASH LLM: Error calling model 'models/gemini-1.5-flash' (NOT_FOUND): 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}"
+        },
+        "status": "FAILURE"
+    },
+    {
+        "id": "b5c6c431-30f3-47b7-8c00-decf3ead78a8",
+        "timestamp": "2026-01-28T00:25:36.631533",
+        "agent": "System",
+        "model": "None",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "input_prompt": "Initialisation du système",
+            "output_response": "Dossier cible détecté : sandbox"
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "624fb00c-d486-44f0-a707-734f651ebd4f",
+        "timestamp": "2026-01-28T00:25:37.905856",
+        "agent": "AuditorAgent",
+        "model": "gemini-1.5-flash",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "input_prompt": "Tentative d'audit",
+            "output_response": "CRASH LLM: Error calling model 'models/gemini-1.5-flash' (NOT_FOUND): 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}"
+        },
+        "status": "FAILURE"
+    },
+    {
+        "id": "ef6707f9-269e-43be-983d-f7ff3720f0c4",
+        "timestamp": "2026-01-28T00:25:38.487387",
+        "agent": "System",
+        "model": "N/A",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "input_prompt": "Crash Système",
+            "output_response": "❌ Erreur de Logging (Agent: FixerAgent) : Les champs ['input_prompt', 'output_response'] sont manquants dans le dictionnaire 'details'. Ils sont OBLIGATOIRES pour valider le TP."
+        },
+        "status": "FAILURE"
+    },
+    {
+        "id": "4845ecc7-f63a-40c1-a3a6-98e960ceec23",
+        "timestamp": "2026-01-28T00:26:41.325227",
+        "agent": "System",
+        "model": "None",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "input_prompt": "Initialisation du système",
+            "output_response": "Dossier cible détecté : sandbox"
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "ad92e565-4e1c-47e1-9794-9e33004c5ed9",
+        "timestamp": "2026-01-28T00:26:42.619278",
+        "agent": "AuditorAgent",
+        "model": "gemini-1.5-flash",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "input_prompt": "Tentative d'audit",
+            "output_response": "CRASH LLM: Error calling model 'gemini-1.5-flash' (NOT_FOUND): 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}"
+        },
+        "status": "FAILURE"
+    },
+    {
+        "id": "6fdaac9d-93b9-480d-a576-512988d2b409",
+        "timestamp": "2026-01-28T00:26:43.045819",
+        "agent": "System",
+        "model": "N/A",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "input_prompt": "Crash Système",
+            "output_response": "❌ Erreur de Logging (Agent: FixerAgent) : Les champs ['input_prompt', 'output_response'] sont manquants dans le dictionnaire 'details'. Ils sont OBLIGATOIRES pour valider le TP."
+        },
+        "status": "FAILURE"
+    },
+    {
+        "id": "cbee926f-b651-4998-a7ec-01c806d3dbf4",
+        "timestamp": "2026-01-28T00:27:56.757770",
+        "agent": "System",
+        "model": "None",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "input_prompt": "Initialisation du système",
+            "output_response": "Dossier cible détecté : sandbox"
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "6d8be88d-1f28-4284-bd4b-5a0c10c1c48d",
+        "timestamp": "2026-01-28T00:27:57.933630",
+        "agent": "AuditorAgent",
+        "model": "gemini-1.5-flash",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "input_prompt": "Tentative d'audit",
+            "output_response": "CRASH LLM: Error calling model 'gemini-1.5-flash' (NOT_FOUND): 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}"
+        },
+        "status": "FAILURE"
+    },
+    {
+        "id": "22222a1f-41fc-4867-887a-9519f9afeeb2",
+        "timestamp": "2026-01-28T00:27:58.389176",
+        "agent": "System",
+        "model": "N/A",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "input_prompt": "Crash Système",
+            "output_response": "❌ Erreur de Logging (Agent: FixerAgent) : Les champs ['input_prompt', 'output_response'] sont manquants dans le dictionnaire 'details'. Ils sont OBLIGATOIRES pour valider le TP."
+        },
+        "status": "FAILURE"
+    },
+    {
+        "id": "a01eb296-2941-426a-84b8-2aa2fdb9e219",
+        "timestamp": "2026-01-28T00:30:28.498246",
+        "agent": "System",
+        "model": "None",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "input_prompt": "Initialisation du système",
+            "output_response": "Dossier cible détecté : sandbox"
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "e1f5477e-0fcd-4520-be3b-e4f7805740d9",
+        "timestamp": "2026-01-28T00:30:29.948235",
+        "agent": "AuditorAgent",
+        "model": "gemini-1.5-flash",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "input_prompt": "Tentative d'audit",
+            "output_response": "CRASH LLM: Error calling model 'gemini-1.5-flash' (NOT_FOUND): 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}"
+        },
+        "status": "FAILURE"
+    },
+    {
+        "id": "3566e4f3-851f-4a83-bc6b-87d627ccbda6",
+        "timestamp": "2026-01-28T00:30:30.359757",
+        "agent": "System",
+        "model": "N/A",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "input_prompt": "Crash Système",
+            "output_response": "❌ Erreur de Logging (Agent: FixerAgent) : Les champs ['input_prompt', 'output_response'] sont manquants dans le dictionnaire 'details'. Ils sont OBLIGATOIRES pour valider le TP."
+        },
+        "status": "FAILURE"
+    },
+    {
+        "id": "29db30e0-8ee4-4d3b-8d3c-66528295be04",
+        "timestamp": "2026-01-28T00:32:46.253234",
+        "agent": "System",
+        "model": "None",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "input_prompt": "Initialisation du système",
+            "output_response": "Dossier cible détecté : sandbox"
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "d446e622-5250-4f62-8c79-dce5756c28b6",
+        "timestamp": "2026-01-28T00:32:48.121422",
+        "agent": "AuditorAgent",
+        "model": "gemini-1.5-flash",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "input_prompt": "Tentative d'audit",
+            "output_response": "CRASH LLM: Error calling model 'gemini-1.5-flash' (NOT_FOUND): 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}"
+        },
+        "status": "FAILURE"
+    },
+    {
+        "id": "848984cb-e336-46d8-aabe-c23cd44fb3d1",
+        "timestamp": "2026-01-28T00:32:48.460136",
+        "agent": "System",
+        "model": "N/A",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "input_prompt": "Crash Système",
+            "output_response": "❌ Erreur de Logging (Agent: FixerAgent) : Les champs ['input_prompt', 'output_response'] sont manquants dans le dictionnaire 'details'. Ils sont OBLIGATOIRES pour valider le TP."
+        },
+        "status": "FAILURE"
+    },
+    {
+        "id": "83365402-8b0b-4c47-b516-85b671c921b3",
+        "timestamp": "2026-01-28T00:35:19.609267",
+        "agent": "System",
+        "model": "None",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "input_prompt": "Initialisation du système",
+            "output_response": "Dossier cible détecté : sandbox"
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "da0f2a8a-f44f-4889-a89a-b1243ceed387",
+        "timestamp": "2026-01-28T00:35:20.856834",
+        "agent": "AuditorAgent",
+        "model": "gemini-1.5-flash",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "input_prompt": "Tentative d'audit",
+            "output_response": "CRASH LLM: Error calling model 'gemini-1.5-flash' (NOT_FOUND): 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}"
+        },
+        "status": "FAILURE"
+    },
+    {
+        "id": "71b8ff89-8eb3-4309-a6ba-e516402fb1c5",
+        "timestamp": "2026-01-28T00:35:21.195930",
+        "agent": "System",
+        "model": "N/A",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "input_prompt": "Crash Système",
+            "output_response": "❌ Erreur de Logging (Agent: FixerAgent) : Les champs ['input_prompt', 'output_response'] sont manquants dans le dictionnaire 'details'. Ils sont OBLIGATOIRES pour valider le TP."
+        },
+        "status": "FAILURE"
+    },
+    {
+        "id": "d84e8006-a566-482b-bdc4-7b568aab230c",
+        "timestamp": "2026-01-28T00:38:45.721266",
+        "agent": "System",
+        "model": "None",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "input_prompt": "Initialisation du système",
+            "output_response": "Dossier cible détecté : sandbox"
+        },
+        "status": "SUCCESS"
+    },
+    {
+        "id": "378c13cf-209d-4f1b-bc41-8ad00f22aeae",
+        "timestamp": "2026-01-28T00:38:47.301669",
+        "agent": "AuditorAgent",
+        "model": "gemini-1.5-flash",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "input_prompt": "Tentative d'appel LLM",
+            "output_response": "ERREUR_CRITIQUE: Error calling model 'gemini-1.5-flash' (NOT_FOUND): 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}"
+        },
+        "status": "FAILURE"
+    },
+    {
+        "id": "bf0a2016-bf16-40f2-a9bc-01fa8ce99a42",
+        "timestamp": "2026-01-28T00:38:47.810866",
+        "agent": "System",
+        "model": "N/A",
+        "action": "CODE_ANALYSIS",
+        "details": {
+            "input_prompt": "Crash Système",
+            "output_response": "❌ Erreur de Logging (Agent: FixerAgent) : Les champs ['input_prompt', 'output_response'] sont manquants dans le dictionnaire 'details'. Ils sont OBLIGATOIRES pour valider le TP."
+        },
+        "status": "FAILURE"
+    }
 ]

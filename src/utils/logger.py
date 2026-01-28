@@ -29,7 +29,7 @@ def log_experiment(agent_name: str, model_used: str, action: ActionType, details
 
     Raises:
         ValueError: Si les champs obligatoires sont manquants dans 'details' ou si l'action est invalide.
-    """
+    
     
     # --- 1. VALIDATION DU TYPE D'ACTION ---
     # Permet d'accepter soit l'objet Enum, soit la chaîne de caractères correspondante
@@ -86,4 +86,4 @@ def log_experiment(agent_name: str, model_used: str, action: ActionType, details
     
     # Écriture
     with open(LOG_FILE, 'w', encoding='utf-8') as f:
-        json.dump(data, f, indent=4, ensure_ascii=False)
+        json.dump(data, f, indent=4, ensure_ascii=False)"""
