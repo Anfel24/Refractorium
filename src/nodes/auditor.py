@@ -36,6 +36,8 @@ def auditor_node(state: AgentState):
     
     # Préparation du contenu utilisateur pour le log et le LLM
     user_content = f"Fichiers:\n{state['files_content']}\n\nApport Pylint:\n{pylint_report}"
+
+    
     
     try:
         print("🧠 [Auditor] Génération du plan...")
@@ -47,14 +49,16 @@ def auditor_node(state: AgentState):
         if not result:
             raise ValueError("L'IA n'a pas pu générer de plan structuré.")
 
-        # FIX 3: LOGGING OBLIGATOIRE POUR LE TP
+        
         log_experiment(
             agent_name="AuditorAgent",
             model_used="gemini-1.5-flash", # ou votre modèle
             action=ActionType.ANALYSIS,
-            details={
-                "input_prompt": user_content,
-                "output_response": result.model_dump_json()
+             details={
+             "system_prompt": AUDITOR_SYSTEM_PROMPT,
+             "input_prompt": user_content,
+             "output_response": result.model_dump_json(),
+             "pylint_summary": pylint_report
             },
             status="SUCCESS"
         )
@@ -66,19 +70,20 @@ def auditor_node(state: AgentState):
         }
 
    
-    # Dans auditor.py ET fixer.py
+    
     except Exception as e:
      error_msg = str(e)
      print(f"❌ Erreur détectée : {error_msg}")
     
-     # ON SATISFAIT LE LOGGER QUOI QU'IL ARRIVE
+    
      log_experiment(
         agent_name="AuditorAgent", # Ou FixerAgent selon le fichier
         model_used="gemini-1.5-flash",
         action=ActionType.ANALYSIS,
         details={
-            "input_prompt": "Tentative d'appel LLM", 
-            "output_response": f"ERREUR_CRITIQUE: {error_msg}"
+        "system_prompt": AUDITOR_SYSTEM_PROMPT,
+        "input_prompt": user_content,
+        "output_response": f"ERREUR_CRITIQUE: {error_msg}"
         },
         status="FAILURE"
      )

@@ -59,25 +59,42 @@ def judge_node(state: AgentState):
         # --- LOGGING OBLIGATOIRE ---
         log_experiment(
             agent_name="JudgeAgent",
-            model_used="gemini-1.5-flash", # ou votre modèle config
+            model_used="gemini-1.5-flash",
             action=ActionType.GENERATION,
             details={
+                "input_prompt": user_content,  
+                "output_response": result.model_dump_json(),  
                 "pytest_status": "PASS" if pytest_success else "FAIL",
                 "pylint_report": pylint_report,
                 "verdict": result.test_result
             },
             status="SUCCESS"
         )
-
+        
         return {
             "test_result": result.test_result,
             "test_errors": result.test_errors,
             "history": state["history"] + [f"Verdict Judge: {'✅ PASS' if result.test_result else '❌ FAIL'}"]
         }
 
-    except Exception as e:
+    except Exception as e:  
         error_msg = f"Erreur lors du jugement : {str(e)}"
         print(f"❌ {error_msg}")
+        
+        # LOGGING EN CAS D'ERREUR
+        log_experiment(
+            agent_name="JudgeAgent",
+            model_used="gemini-1.5-flash",
+            action=ActionType.GENERATION,
+            details={
+                "input_prompt": user_content,
+                "output_response": f"ERROR: {str(e)}",
+                "pytest_status": "ERROR",
+                "error_details": error_msg
+            },
+            status="FAILURE"
+        )
+        
         return {
             "test_result": False,
             "test_errors": error_msg,

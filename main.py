@@ -1,7 +1,6 @@
 import argparse
 import sys
 import os
-
 from dotenv import load_dotenv
 from src.graph import create_graph
 from src.utils.logger import log_experiment, ActionType
@@ -49,40 +48,68 @@ def main():
 
 
     print(f"🚀 DEMARRAGE SUR : {args.target_dir}")
-    #format irronne :should be fixed 
-   # log_experiment("System", "STARTUP", f"Target: {args.target_dir}", "INFO" ,"STARTING")
-    details_startup = {
-    "input_prompt": "Initialisation du système",
-    "output_response": f"Dossier cible détecté : {args.target_dir}"
-}
+   
+   #  LOG DU DÉMARRAGE
     log_experiment(
-    agent_name="System",
-    model_used="None",
-    action=ActionType.ANALYSIS, # Utilise l'Enum !
-    details=details_startup,    # Envoie le dictionnaire avec les clés requises !
-    status="SUCCESS"
-)
+        agent_name="SystemOrchestrator",
+        model_used="N/A",
+        action=ActionType.ANALYSIS,
+        details={
+            "input_prompt": f"Initialisation du système sur le dossier : {args.target_dir}",
+            "output_response": f"Fichiers détectés : {list(files.keys())}. Prêt à démarrer.",
+            "max_iterations": args.max_iterations,
+            "files_count": len(files)
+        },
+        status="SUCCESS"
+    )
     try:
+     
      workflow = create_graph()
      final_state = workflow.invoke(initial_state)
      print("✅ MISSION_COMPLETE")
      print(f"Statut final : {' Corrigé' if final_state['test_result'] else 'Non corrigé'}")
      print(f"Itérations utilisées : {final_state['iteration']}/{args.max_iterations}")
-  
 
-    except Exception as e:
-     print(f"💥 ERREUR CRITIQUE du Graphe : {e}")
-     """log_experiment(
-        agent_name="System", 
-        model_used="N/A", 
-        action=ActionType.ANALYSIS, 
-        details={"input_prompt": "Crash Système", "output_response": str(e)}, 
-        status="FAILURE"
-    )"""
+      #  LOG DE FIN RÉUSSIE
+     log_experiment(
+            agent_name="SystemOrchestrator",
+            model_used="N/A",
+            action=ActionType.GENERATION,
+            details={
+                "input_prompt": f"Exécution complète du workflow sur {args.target_dir}",
+                "output_response": f"Mission terminée. Test result: {final_state['test_result']}. Iterations: {final_state['iteration']}",
+                "final_test_result": final_state['test_result'],
+                "total_iterations": final_state['iteration'],
+                "history": final_state.get('history', [])
+            },
+            status="SUCCESS"
+    )
+  
 
    
 
+     
+    except Exception as e:
+    
+     print(f"💥 ERREUR CRITIQUE du Graphe : {e}")
+    
 
+
+    #  LOG DE L'ERREUR
+    log_experiment(
+            agent_name="SystemOrchestrator",
+            model_used="N/A",
+            action=ActionType.DEBUG,
+            details={
+                "input_prompt": f"Tentative d'exécution du workflow sur {args.target_dir}",
+                "output_response": f"ERREUR CRITIQUE: {str(e)}",
+                "error_type": type(e).__name__,
+                "target_dir": args.target_dir
+            },
+            status="FAILURE"
+        )
+        
+sys.exit(1)
 
 if __name__ == "__main__":
     main()
