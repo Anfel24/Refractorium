@@ -1,4 +1,3 @@
-
 import subprocess
 
 def runpylint(target_dir: str) -> str:
@@ -21,4 +20,3 @@ def runpylint(target_dir: str) -> str:
     output.append(f"=== le code: {result.returncode} ===") #code indique est ce que le code  la gravite de code 
 
     return "\n".join(output)
-

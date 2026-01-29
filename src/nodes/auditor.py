@@ -1,7 +1,7 @@
 import os
 import time  # FIX 1: Import manquant
 from src.state import AgentState
-from src.tools.pylinTools import runpylint
+from src.tools.pylinttools import runpylint
 from src.llm_config import get_model
 from pydantic import BaseModel, Field
 # FIX 3: Import du logger obligatoire
@@ -27,15 +27,21 @@ AUDITOR_SYSTEM_PROMPT = load_auditor_prompt()
 def auditor_node(state: AgentState):
    # time.sleep(5)
     # Récupération du dict Pylint
+    # Récupération du résultat de Pylint
     pylint_res = runpylint(state["target_dir"])
-    
-    # FIX 2: On formate les erreurs pour le LLM
-    pylint_report = pylint_res.get("stdout", "Aucune erreur détectée.")
+
+    # On vérifie si c'est déjà un string ou un dictionnaire
+    if isinstance(pylint_res, dict):
+     pylint_report = pylint_res.get("stdout", "Aucune erreur détectée.")
+    else:
+     pylint_report = str(pylint_res)
     
     auditor_llm = llm.with_structured_output(RefactoringPlan)
     
     # Préparation du contenu utilisateur pour le log et le LLM
     user_content = f"Fichiers:\n{state['files_content']}\n\nApport Pylint:\n{pylint_report}"
+
+    
     
     try:
         print("🧠 [Auditor] Génération du plan...")
@@ -47,14 +53,16 @@ def auditor_node(state: AgentState):
         if not result:
             raise ValueError("L'IA n'a pas pu générer de plan structuré.")
 
-        # FIX 3: LOGGING OBLIGATOIRE POUR LE TP
+        
         log_experiment(
             agent_name="AuditorAgent",
             model_used="gemini-1.5-flash", # ou votre modèle
             action=ActionType.ANALYSIS,
-            details={
-                "input_prompt": user_content,
-                "output_response": result.model_dump_json()
+             details={
+             "system_prompt": AUDITOR_SYSTEM_PROMPT,
+             "input_prompt": user_content,
+             "output_response": result.model_dump_json(),
+             "pylint_summary": pylint_report
             },
             status="SUCCESS"
         )
@@ -66,19 +74,20 @@ def auditor_node(state: AgentState):
         }
 
    
-    # Dans auditor.py ET fixer.py
+    
     except Exception as e:
      error_msg = str(e)
      print(f"❌ Erreur détectée : {error_msg}")
     
-     # ON SATISFAIT LE LOGGER QUOI QU'IL ARRIVE
+    
      log_experiment(
         agent_name="AuditorAgent", # Ou FixerAgent selon le fichier
         model_used="gemini-1.5-flash",
         action=ActionType.ANALYSIS,
         details={
-            "input_prompt": "Tentative d'appel LLM", 
-            "output_response": f"ERREUR_CRITIQUE: {error_msg}"
+        "system_prompt": AUDITOR_SYSTEM_PROMPT,
+        "input_prompt": user_content,
+        "output_response": f"ERREUR_CRITIQUE: {error_msg}"
         },
         status="FAILURE"
      )

@@ -49,6 +49,7 @@ def fixer_node(state: AgentState):
     CODE SOURCE ACTUEL : 
     {current_code}
     """
+    
 
     try:
         print(f"🛠️ [Fixer] Itération {new_iteration} : Application des corrections...")
@@ -62,19 +63,19 @@ def fixer_node(state: AgentState):
         if not result or not result.files_content:
             raise ValueError("L'IA a renvoyé un contenu vide ou invalide.")
 
-        # --- LOGGING OBLIGATOIRE (Critère de notation Data-Driven) ---
         log_experiment(
             agent_name="FixerAgent",
-            model_used="gemini-2.0-flash", # ou votre modèle config
+            model_used="gemini-2.0-flash", # ou votre modèle
             action=ActionType.FIX,
-            details={
-                "input_prompt": user_content,
-                "output_response": result.model_dump_json(),
-                "iteration": new_iteration
+             details={
+             "system_prompt": FIXER_SYSTEM_PROMPT,
+             "input_prompt": user_content,
+             "output_response": result.model_dump_json(),
+             "iteration": new_iteration
             },
-            status="SUCCESS"
+           status="SUCCESS"
         )
-        # -----------------------------------------------------------
+       
 
         # Mise à jour sécurisée des fichiers
         updated_files = state["files_content"].copy()
@@ -95,8 +96,14 @@ def fixer_node(state: AgentState):
             agent_name="FixerAgent",
             model_used="gemini-1.5-flash",
             action=ActionType.FIX,
-            details={"error": str(e), "iteration": new_iteration},
-            status="FAILED"
+            details={
+             "system_prompt": FIXER_SYSTEM_PROMPT,
+             "input_prompt": user_content,
+             "output_response": f"ERROR: {str(e)}",
+             "iteration": new_iteration
+            },
+         status="FAILURE"
+           
         )
         
         return {

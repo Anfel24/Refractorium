@@ -1,6 +1,3 @@
-
-
-
 import subprocess
 
 def runpytest(target_dir: str):
